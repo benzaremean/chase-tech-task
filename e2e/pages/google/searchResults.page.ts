@@ -21,14 +21,25 @@ class SearchResultsPage {
     await $(this.selectors.newsHeadings);
     const headingElements = await $$(this.selectors.newsHeadings);
     const headings = await Promise.all(
-      headingElements.map((element) => element.getText())
+      headingElements.map(async (element) => {
+        await element.waitUntil(
+          async function () {
+            return (await this.getText()) !== '';
+          },
+          {
+            timeout: 10000,
+            timeoutMsg: 'expected text to not be empty',
+          }
+        );
+        return element.getText();
+      })
     );
     return headings;
   }
 
   public async numberOfMatchingHeadings(headline: string): Promise<number> {
     const headings = (await this.collectHeadings()).map((heading) =>
-      heading.replace('...', '').trim()
+      heading.replace('...', '').trim() // remove elipsis
     );
     allureReporter.addAttachment(
       'News Articles on Google',

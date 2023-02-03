@@ -1,5 +1,6 @@
 import type { Options } from '@wdio/types';
-import { ReportGenerator, HtmlReporter } from 'wdio-html-nice-reporter';
+
+let reloadSession = false;
 
 export const config: Options.Testrunner = {
   //
@@ -246,8 +247,8 @@ export const config: Options.Testrunner = {
    * @param {String}                   uri      path to feature file
    * @param {GherkinDocument.IFeature} feature  Cucumber feature object
    */
-  // beforeFeature: function (uri, feature) {
-  // },
+//   beforeFeature: function (uri, feature) {
+//   },
   /**
    *
    * Runs before a Cucumber Scenario.
@@ -255,7 +256,10 @@ export const config: Options.Testrunner = {
    * @param {Object}                 context  Cucumber World object
    */
   beforeScenario: async function (world, context) {
-    await browser.reloadSession();
+    if (reloadSession) {
+        console.log('..... About to reload session')
+        await browser.reloadSession();
+    }
   },
   /**
    *
@@ -292,8 +296,9 @@ export const config: Options.Testrunner = {
    * @param {number}                 result.duration  duration of scenario in milliseconds
    * @param {Object}                 context          Cucumber World object
    */
-  // afterScenario: function (world, result, context) {
-  // },
+  afterScenario: function (world, result, context) {
+    reloadSession = true;
+  },
   /**
    *
    * Runs after a Cucumber Feature.
