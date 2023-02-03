@@ -42,7 +42,7 @@ cd e2e
 npm install
 npm test
 
-# on completeion of tests run below command to launch allure report
+# on completion of tests run below command to launch allure report
 npm run report
 ```
 
